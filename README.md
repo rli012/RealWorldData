@@ -35,3 +35,5 @@ CDER Small Business and Industry Assistance Webinar: Framework for FDA’s Real-
 
 
 ## [IQVIA](https://www.iqvia.com/)
+
+* [Five Facts About Real-World Data](https://www.bms.com/life-and-science/science/5-facts-real-world-data.html)
