@@ -36,4 +36,6 @@ CDER Small Business and Industry Assistance Webinar: Framework for FDA’s Real-
 
 ## [IQVIA](https://www.iqvia.com/)
 
+## Articles
 * [Five Facts About Real-World Data](https://www.bms.com/life-and-science/science/5-facts-real-world-data.html)
+* [Webinar: Applications of Natural Language Processing to transform real world data](https://www.linguamatics.com/events/webinar-applications-natural-language-processing-transform-real-world-data)
