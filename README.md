@@ -1,5 +1,7 @@
 # Real World Data
 
+![RWD](https://github.com/Ruidong-Li/RealWorldData/blob/master/RWD.png)
+
 Real-world data (RWD) and real-world evidence (RWE) are playing an increasing role in health care decisions.
 
 FDA uses RWD and RWE to monitor postmarket safety and adverse events and to make regulatory decisions.
