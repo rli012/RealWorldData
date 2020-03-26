@@ -1,4 +1,7 @@
 
+rvest & xml2: https://towardsdatascience.com/tidy-web-scraping-in-r-tutorial-and-resources-ac9f72b4fe47
+
+### Table based
 for (drug in drug1$drugs.D30.all) {
   drug <- tolower(drug)
   print (drug)
@@ -39,3 +42,6 @@ for (drug in drug1$drugs.D30.all) {
     }
   }
 }
+
+
+### Drugs.com based
