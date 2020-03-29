@@ -102,3 +102,182 @@ drug.info <- data.frame(drugs.az=drugs.az, site=site, stringsAsFactors = F)
 
 write.table(drug.info, file='data/IQVIA/Dispensing/Drugs.com/drugs.az.txt',
             quote = F, sep = '\t', row.names = F)
+
+
+
+
+library(rvest)
+library(xml2)
+drug.info <- c()
+
+for (i in 1:length(drugs.az)) {
+  az.name <- drugs.az[i]
+  drug <- site[i]
+  
+  fl <- paste0('data/IQVIA/Dispensing/Drugs.com/main/', drug, '.html')
+  
+  if (file.exists(fl)) {
+    
+    mtm.html <- fl
+    mtm.doc <- read_html(mtm.html)
+    
+    mtm.list <- mtm.doc %>% 
+      html_nodes("p") %>% 
+      html_text()
+    
+    generic.brand.name <- mtm.list[1]
+    generic.brand.name <- gsub('\n.*', '', generic.brand.name)
+
+    #description <- mtm.doc %>% 
+    #  rvest::html_nodes('body') %>% 
+    #  xml2::xml_find_all("//div[contains(@id, 'WhatIs')]") %>% 
+    #  rvest::html_text()
+    
+    description <- mtm.list[3]  ## TODO: More description
+    description <- gsub('\\n\\s+', ' ', description)
+    
+    mtm.list <- mtm.doc %>% 
+      html_nodes("li") %>% 
+      html_text()
+    
+    drug.class <- mtm.list[grep('Drug class', mtm.list)]
+    
+    generic.brand.name <- ifelse(length(generic.brand.name)!=0, generic.brand.name, NA)
+    drug.class <- ifelse(length(drug.class)!=0, drug.class, NA)
+    description <- ifelse(length(description)!=0, description, NA)
+    
+    drug.info <- rbind(drug.info, c(az.name, drug, 'main', generic.brand.name, drug.class, description, NA, NA))
+    
+    next
+  }
+  
+  fl <- paste0('data/IQVIA/Dispensing/Drugs.com/mtm/', drug, '.html')
+  
+  if (file.exists(fl)) {
+    
+    mtm.html <- fl
+    mtm.doc <- read_html(mtm.html)
+    
+    mtm.list <- mtm.doc %>% 
+      html_nodes("p") %>% 
+      html_text()
+    
+    generic.brand.name <- mtm.list[1]
+    generic.brand.name <- gsub('\n.*', '', generic.brand.name)
+    
+    #description <- mtm.doc %>% 
+    #  rvest::html_nodes('body') %>% 
+    #  xml2::xml_find_all("//div[contains(@id, 'WhatIs')]") %>% 
+    #  rvest::html_text()
+    
+    description <- mtm.list[3]  ## TODO: More description
+    description <- gsub('\\n\\s+', ' ', description)
+    
+    mtm.list <- mtm.doc %>% 
+      html_nodes("li") %>% 
+      html_text()
+    
+    drug.class <- mtm.list[grep('Drug class', mtm.list)]
+    
+    generic.brand.name <- ifelse(length(generic.brand.name)!=0, generic.brand.name, NA)
+    drug.class <- ifelse(length(drug.class)!=0, drug.class, NA)
+    description <- ifelse(length(description)!=0, description, NA)
+    
+    drug.info <- rbind(drug.info, c(az.name, drug, 'mtm', generic.brand.name, drug.class, description, NA, NA))
+    
+    next
+  }
+  
+  fl <- paste0('data/IQVIA/Dispensing/Drugs.com/cdi/', drug, '.html')
+  
+  if (file.exists(fl)) {
+    
+    cdi.html <- fl
+    cdi.doc <- read_html(cdi.html)
+    
+    cdi.list <- cdi.doc %>% 
+      html_nodes("p") %>% 
+      html_text()
+    
+    generic.brand.name <- cdi.list[1]
+    generic.brand.name <- gsub('\n.*', '', generic.brand.name)
+
+    cdi.list <- cdi.doc %>% 
+      html_nodes("li") %>% 
+      html_text()
+
+    drug.class <- cdi.list[grep('Drug class', cdi.list)]
+    
+    cdi.list <- cdi.doc %>% 
+      html_nodes("ul") %>% 
+      html_text()
+    
+    
+    vmig <- cdi.doc %>% 
+      rvest::html_nodes('body') %>% 
+      xml2::xml_find_all("//ul[contains(@class, 'nav-tabs nav-tabs-collapse vmig')]") %>% 
+      rvest::html_text()
+    
+    
+    warn <- cdi.doc %>% 
+      rvest::html_nodes('body') %>% 
+      xml2::xml_find_all("//div[contains(@class, 'blackboxWarning')]") %>% 
+      rvest::html_text()
+    
+    idx <- 3 + length(vmig) + length(warn)
+    
+    description <- cdi.list[idx]
+    description <- gsub('\\n\\s+', ' ', description)
+    
+    #drug.class <- cdi.doc %>% 
+    #  rvest::html_nodes('body') %>% 
+    #  xml2::xml_find_all("//ul[contains(@class, 'more-resources-list more-resources-list-general')]") %>% 
+    #  rvest::html_text()
+    
+    generic.brand.name <- ifelse(length(generic.brand.name)!=0, generic.brand.name, NA)
+    drug.class <- ifelse(length(drug.class)!=0, drug.class, NA)
+    description <- ifelse(length(description)!=0, description, NA)
+    
+    drug.info <- rbind(drug.info, c(az.name, drug, 'cdi', generic.brand.name, drug.class, description, NA, NA))
+    
+    next
+  }
+  
+  
+  fl <- paste0('data/IQVIA/Dispensing/Drugs.com/international/', drug, '.html')
+  
+  if (file.exists(fl)) {
+    
+    intl.html <- fl
+    intl.doc <- read_html(intl.html)
+    
+    intl.list <- intl.doc %>% 
+      html_nodes("p") %>% 
+      html_text()
+    
+    note <- intl.list[1]
+    
+    drug.us <- gsub('known as (\\w+) in the US', '\\1', str_extract(note, 'known as \\w+ in the US'))
+    
+    note <- ifelse(length(note)!=0, note, NA)
+    drug.us <- ifelse(length(drug.us)!=0, drug.us, NA)
+
+    drug.info <- rbind(drug.info, c(az.name, drug, 'international', NA, NA, NA, note, drug.us))
+
+  } else {
+    
+    drug.info <- rbind(drug.info, c(az.name, drug, NA, NA, NA, NA, NA, NA))
+    
+  }
+  
+}
+
+View(drug.info)
+
+drug.info <- data.frame(drug.info, stringsAsFactors = F)
+
+colnames(drug.info) <- c('drug.az', 'site', 'source', 'generic.brand.name', 'drug.class', 'description', 'note', 'drug.us')
+
+write.table(drug.info, file='data/IQVIA/Dispensing/Drugs.com/drugs.az.info.txt',
+            quote = F, sep = '\t', row.names = F)
+
