@@ -281,3 +281,14 @@ colnames(drug.info) <- c('drug.az', 'site', 'source', 'generic.brand.name', 'dru
 write.table(drug.info, file='data/IQVIA/Dispensing/Drugs.com/drugs.az.info.txt',
             quote = F, sep = '\t', row.names = F)
 
+
+
+idx <- which(is.na(drug.info$source))
+idx
+
+for (drug in drug.info$site[idx]) {
+
+  url <- paste0('https://www.drugs.com/pro/', drug, '.html')
+  pro <- system(paste0('wget ', url, ' -P ', 'data/IQVIA/Dispensing/Drugs.com/pro/'))
+    
+}
