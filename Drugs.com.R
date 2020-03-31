@@ -292,3 +292,7 @@ for (drug in drug.info$site[idx]) {
   pro <- system(paste0('wget ', url, ' -P ', 'data/IQVIA/Dispensing/Drugs.com/pro/'))
     
 }
+
+
+#################
+query <- "SELECT UPPER(MEDS_NM), COUNT(*) AS COUNTS FROM IMS_EMR_VW.DISPENSING GROUP BY UPPER(MEDS_NM) ORDER BY COUNTS DESC"
